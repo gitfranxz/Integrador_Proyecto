@@ -1,0 +1,62 @@
+private void btnReservar_CitaActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+        // TODO add your handling code here:
+        Conexion objConexion = new Conexion();
+
+        try {
+            CitasCTRL oCitas = recuperarDatosCita();
+
+            String strSentenciaInsert = "INSERT INTO doctor (cita_dni, cita_nombres, cita_apellidos, cita_edad, cita_genero, cita_numhistoria, cita_especialidad, cita_horario, cita_doctores, cita_motivo)"
+                    + "VALUES (?,?,?,?,?,?)";
+
+            PreparedStatement pstmt = objConexion.getConexion().prepareStatement(strSentenciaInsert);
+
+            pstmt.setInt(1, oCitas.getCita_dni());
+            pstmt.setString(2, oCitas.getCita_nombres());
+            pstmt.setString(3, oCitas.getCita_apellidos());
+            pstmt.setInt(4, oCitas.getCita_edad());
+            pstmt.setString(5, oCitas.getCita_genero());
+            pstmt.setInt(6, oCitas.getCita_numhistoria());
+            pstmt.setString(7, oCitas.getCita_especialidad());
+            pstmt.setString(8, oCitas.getCita_horario());
+            pstmt.setString(9, oCitas.getCita_doctores());
+            pstmt.setString(10, oCitas.getCita_motivo());
+
+            pstmt.executeUpdate();
+            
+            ResultSet resultado = objConexion.consultar("SELECT * FROM doctor");
+
+            while (resultado.next()) {
+                System.out.println(resultado.getString("cita_dni"));
+                System.out.println(resultado.getString("cita_nombres"));
+                System.out.println(resultado.getString("cita_apellidos"));
+                System.out.println(resultado.getString("cita_edad"));
+                System.out.println(resultado.getString("cita_genero"));
+                System.out.println(resultado.getString("cita_numhistoria"));
+                System.out.println(resultado.getString("cita_especialidad"));
+                System.out.println(resultado.getString("cita_horario"));
+                System.out.println(resultado.getString("cita_doctores"));
+                System.out.println(resultado.getString("cita_motivo"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al ejecutar la sentencia SQL: " + e.getMessage());
+        }
+    
+    }                                                
+    
+    public CitasCTRL recuperarDatosCita() {
+        CitasCTRL oCitas = new CitasCTRL();
+
+        int DNI = (txtDni_paciente.getText().isEmpty()) ? 0 : Integer.parseInt(txtDni_paciente.getText());
+        oCitas.setCita_dni(DNI);
+        oCitas.setCita_nombres(txtNombre_paciente.getText());
+        oCitas.setCita_apellidos(txtApellidos_paciente.getText());
+        //oCitas.setCita_edad(txtEdad_paciente.getText());
+        oCitas.setCita_genero((String) jComboBox1.getSelectedItem());
+        //oCitas.setCita_numhistoria(txtHistoria_paciente.getText());
+        oCitas.setCita_especialidad((String) jComboBox2.getSelectedItem());
+        oCitas.setCita_horario((String) jComboBox3.getSelectedItem());
+        oCitas.setCita_doctores((String) jComboBox4.getSelectedItem());
+        oCitas.setCita_motivo(txtMotivo_cita.getText());
+
+        return oCitas;
+    }
